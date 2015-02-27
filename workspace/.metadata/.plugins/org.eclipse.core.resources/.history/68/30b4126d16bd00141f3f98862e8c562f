@@ -1,0 +1,69 @@
+package P2;
+
+/**
+ * This class implements the doorman's part of the
+ * Barbershop thread synchronization example.
+ */
+public class Doorman implements Runnable{
+	
+	
+	private CustomerQueue q;
+	private Gui gui;
+	private boolean isRunning;
+	private Thread thread;
+	
+	/**
+	 * Creates a new doorman.
+	 * @param queue		The customer queue.
+	 * @param gui		A reference to the GUI interface.
+	 */
+	
+	public Doorman(CustomerQueue queue, Gui gui) { 
+		this.q = queue;
+		this.gui = gui;
+		thread = new Thread(new Doorman(this.q, this.gui));
+		
+		
+	}
+
+	/**
+	 * Starts the doorman running as a separate thread.
+	 */
+	public void startThread() {
+		isRunning = true;
+		//thread.start();
+		thread.start();
+		
+	}
+
+	/**
+	 * Stops the doorman thread.
+	 */
+	public void stopThread() {
+		isRunning = false;
+	}
+
+	@Override
+	public void run() {
+		while(isRunning){
+			try {
+				// sover i en tid angitt i fra slider UI
+				Thread.sleep(Globals.doormanSleep);
+				// sjekker om det er ledig plass i customerQueuen, hvis ja, lag en ny kunde og putt inn
+				// kunden i køen.
+				// lager ny kunde
+				Customer newCustomer = new Customer();
+				// prøver å adde ny kunde til køen
+				this.q.queue.put(newCustomer);
+				// Her lages det nye kunder hele tiden selv når det er fullt, vil kanskje ende opp med
+				// å spise opp minnet, siden man ikke kan destroye objekter i java.
+				
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	// Add more methods as needed
+}

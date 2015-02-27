@@ -1,0 +1,44 @@
+package P2;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+/**
+ * This class implements a queue of customers as a circular buffer.
+ */
+public class CustomerQueue {
+	/**
+	 * Creates a new customer queue.
+	 * @param queueLength	The maximum length of the queue.
+	 * @param gui			A reference to the GUI interface.
+	 */
+	public BlockingQueue<Customer> queue;
+	public int queueLength;
+	public boolean[] availSpot;
+	
+	
+    public CustomerQueue(int queueLength, Gui gui) {
+    	this.queueLength = queueLength;
+    	queue = new ArrayBlockingQueue<Customer>(queueLength);
+    	boolean[] availSpot = new boolean[queueLength];
+    	
+    	for (int i = 0; i < availSpot.length; i++) {
+			availSpot[i] = false;
+		}
+    	
+    	
+	}
+
+	// Add more methods as needed
+
+	public void addCustomer() throws InterruptedException {
+		
+		Customer newCustomer = new Customer();
+		queue.put(newCustomer);
+		
+		//gui.fillLoungeChair(, new Customer());
+		
+	}
+}

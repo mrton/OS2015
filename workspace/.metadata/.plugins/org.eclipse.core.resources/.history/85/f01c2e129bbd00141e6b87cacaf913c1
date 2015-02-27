@@ -1,0 +1,57 @@
+package P2;
+
+/**
+ * This class implements the barber's part of the
+ * Barbershop thread synchronization example.
+ */
+//--------------------CONSUMER---------------------
+public class Barber implements Runnable{
+	/**
+	 * Creates a new barber.
+	 * @param queue		The customer queue.
+	 * @param gui		The GUI.
+	 * @param pos		The position of this barber's chair
+	 */
+	private int barberID;
+	private boolean isRunning;
+	private Gui gui;
+	private CustomerQueue q;
+	
+	public Barber(CustomerQueue queue, Gui gui, int pos) { 
+		this.pos = pos;
+		this.q = queue;
+		this.gui = gui;
+		thread = new Thread(new Barber(queue, gui, pos));
+	}
+
+	/**
+	 * Starts the barber running as a separate thread.
+	 */
+	public void startThread() {
+		isRunning = true;
+		
+	}
+
+	/**
+	 * Stops the barber thread.
+	 */
+	public void stopThread() {
+		isRunning = false;
+	}
+
+	@Override
+	public void run() {
+		while(isRunning){
+			try {
+				Thread.sleep(Globals.barberSleep);
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	// Add more methods as needed
+}
+

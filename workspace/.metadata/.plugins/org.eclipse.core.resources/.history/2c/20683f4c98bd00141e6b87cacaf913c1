@@ -1,0 +1,45 @@
+package P2;
+
+/**
+ * This class implements the barber's part of the
+ * Barbershop thread synchronization example.
+ */
+//--------------------CONSUMER---------------------
+public class Barber implements Runnable{
+	/**
+	 * Creates a new barber.
+	 * @param queue		The customer queue.
+	 * @param gui		The GUI.
+	 * @param pos		The position of this barber's chair
+	 */
+	private boolean available;
+	private int pos;
+	
+	public Barber(CustomerQueue queue, Gui gui, int pos) { 
+		this.pos = pos;
+		
+	}
+
+	/**
+	 * Starts the barber running as a separate thread.
+	 */
+	public void startThread() {
+		// Incomplete
+	}
+
+	/**
+	 * Stops the barber thread.
+	 */
+	public void stopThread() {
+		// Incomplete
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	// Add more methods as needed
+}
+
