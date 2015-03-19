@@ -1,0 +1,6 @@
+package P3;
+
+public class IO {
+	private Queue ioQueue;
+	private Statistics statistics;
+}

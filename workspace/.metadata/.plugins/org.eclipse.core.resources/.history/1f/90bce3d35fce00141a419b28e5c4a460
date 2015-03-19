@@ -1,0 +1,18 @@
+package P3;
+
+public class IO {
+	private Queue ioQueue;
+	private Statistics statistics;
+	
+	
+	public IO(Queue ioQueue, Statistics statistics) {
+		this.ioQueue = ioQueue;
+		this.statistics = statistics;
+	}
+	
+	public void insertProcess(Process p){
+		
+	}
+	
+	
+}
