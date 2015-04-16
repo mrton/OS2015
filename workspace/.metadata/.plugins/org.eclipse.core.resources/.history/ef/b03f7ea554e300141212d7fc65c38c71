@@ -1,0 +1,81 @@
+package P3;
+
+import java.lang.invoke.SwitchPoint;
+
+public class CPU {
+	/** The queue of processes waiting for cpu */
+	private Queue cpuQueue;
+	/** A reference to the statistics collector */
+	private Statistics statistics;	
+	/** Maximum of time a process can be in the cpu before getting switched*/
+	private long roundRobinTime;
+	/** Current time of the system*/
+	long clock = 0;
+	/** Process currently in the cpu */
+	private Process currentProcess;
+	
+	/**
+	 * Creates a new cpu device with the given parameters.
+	 * @param cpuQueue	The cpu queue to be used.
+	 * @param statistics	A reference to the statistics collector.
+	 */
+    public CPU(Queue cpuQueue, Statistics statistics, long roundRobinTime) {
+		this.cpuQueue = cpuQueue;
+		this.statistics = statistics;
+		this.roundRobinTime = roundRobinTime;
+    }
+
+	/**
+	 * Adds a process to the cpu queue.
+	 * @param p	The process to be added.
+	 */
+	public void insertProcess(Process p) {
+		cpuQueue.insert(p);
+		p.entersCpuQueue(clock);
+	}
+	public Process removeFirstCpuEueueProcess(){
+		return (Process) cpuQueue.removeNext();
+	}
+	
+	public boolean isIdle() {
+		return currentProcess == null;
+	}
+	
+	/**
+	 * This method is called when a discrete amount of time has passed.
+	 * @param timePassed	The amount of time that has passed since the last call to this method.
+	 */
+
+	public void timePassed(long timePassed) {
+		if (cpuQueue.getQueueLength() > statistics.memoryQueueLargestLength) {
+			statistics.memoryQueueLargestLength = cpuQueue.getQueueLength();
+		clock += timePassed;
+		}
+    }    
+	/**
+	 * This method is called when a process is exiting the system.
+	 * The memory allocated to this process is freed.
+	 * @param p	The process that is leaving the system.
+	 */
+    public void processCompleted(Process p) {
+    }
+    public void processIO(Process p, IO io) {
+    	io.insertProcess(p);
+    }
+    
+    public Process removeCurrentProcess(){
+    	Process removedProcess = (Process) currentProcess;
+    	currentProcess = null;
+    	return removedProcess;
+    }
+    
+    public Process getCurrentProcess(){
+    	return currentProcess;
+    }
+    public void setCurrentProcess(Process p){
+    	currentProcess = p;
+    	p.enterCpu(clock);
+    }
+}
+
+

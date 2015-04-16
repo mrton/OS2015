@@ -21,6 +21,8 @@ public class Simulator implements Constants
 	/** The average length between process arrivals */
 	private long avgArrivalInterval;
 	// Add member variables as needed
+	private CPU cpu;
+	private IO io;
 
 	/**
 	 * Constructs a scheduling simulator with the given parameters.
@@ -43,6 +45,8 @@ public class Simulator implements Constants
 		eventQueue = new EventQueue();
 		memory = new Memory(memoryQueue, memorySize, statistics);
 		clock = 0;
+		cpu = new CPU(cpuQueue, statistics, maxCpuTime);
+		
 		// Add code as needed
     }
 
@@ -68,6 +72,8 @@ public class Simulator implements Constants
 			// Let the memory unit and the GUI know that time has passed
 			memory.timePassed(timeDifference);
 			gui.timePassed(timeDifference);
+			io.timePassed(timeDifference);
+			cpu.timePassed(timeDifference);
 			// Deal with the event
 			if (clock < simulationLength) {
 				processEvent(event);
@@ -130,18 +136,14 @@ public class Simulator implements Constants
 		Process p = memory.checkMemory(clock);
 		// As long as there is enough memory, processes are moved from the memory queue to the cpu queue
 		while(p != null) {
-			
 			// TODO: Add this process to the CPU queue!
 			// Also add new events to the event queue if needed
-
-			// Since we haven't implemented the CPU and I/O device yet,
-			// we let the process leave the system immediately, for now.
-			memory.processCompleted(p);
+			cpu.insertProcess(p);
+			if(cpu.isIdle()) switchProcess();
 			// Try to use the freed memory:
 			flushMemoryQueue();
 			// Update statistics
 			p.updateStatistics(statistics);
-
 			// Check for more free memory
 			p = memory.checkMemory(clock);
 		}
@@ -151,7 +153,29 @@ public class Simulator implements Constants
 	 * Simulates a process switch.
 	 */
 	private void switchProcess() {
-		// Incomplete
+		
+		Process currentProcess = cpu.getCurrentProcess();
+		// case the cpu is not idle
+		if (currentProcess != null) {
+			cpu.insertProcess(currentProcess);
+			cpu.setCurrentProcess(cpu.removeFirstCpuQueueProcess());
+		}
+		// case the cpu is idle e.g. the first process that gets to the cpu
+		Process nextProcess = cpu.removeFirstCpuQueueProcess();
+		gui.setCpuActive(nextProcess);
+		
+		// Queueing up new events to the eventQueue
+		if (nextProcess != null) {
+			if (nextProcess.timeUntilNextIO() > cpu.getMaxCpuTime() 
+					&& nextProcess.cpuTimeLeft() > cpu.getMaxCpuTime() ){
+				eventQueue.insertEvent(new Event(SWITCH_PROCESS, clock + cpu.getMaxCpuTime()));
+
+			} else if (nextProcess.timeUntilNextIO() > nextProcess.cpuTimeLeft()) {
+				eventQueue.insertEvent(new Event(END_PROCESS, clock + nextProcess.cpuTimeLeft()));
+			} else {
+				eventQueue.insertEvent(new Event(IO_REQUEST, clock + nextProcess.timeUntilNextIO()));
+			}
+		}
 	}
 
 	/**
@@ -159,6 +183,11 @@ public class Simulator implements Constants
 	 */
 	private void endProcess() {
 		// Incomplete
+		// remove process from cpu and free up memory
+		// update statistics
+		Process currentProcess = cpu.removeCurrentProcess();
+		statistics.nofCompletedProcesses++;
+		memory.processCompleted(currentProcess);
 	}
 
 	/**
@@ -167,6 +196,17 @@ public class Simulator implements Constants
 	 */
 	private void processIoRequest() {
 		// Incomplete
+		// remove current process from the cpu and insert it into ioQueue
+		// check if I/O is idle, start processing immediately and schedule END_IO
+		Process currentProcess = cpu.removeCurrentProcess();
+		if (io.isIdle()){
+			io.setCurrentProcess(currentProcess);
+			eventQueue.insertEvent(new Event(END_IO,clock + (long)(Math.random()*25*currentProcess.getAverageIOTime()) ));
+			gui.setIoActive(currentProcess);
+		} else {
+			io.insertProcess(currentProcess);
+		}
+		
 	}
 
 	/**
@@ -174,7 +214,8 @@ public class Simulator implements Constants
 	 * is done with its I/O operation.
 	 */
 	private void endIoOperation() {
-		// Incomplete
+		Process currentProcess = io.removeCurrentProcess();
+		cpu.insertProcess(currentProcess);
 	}
 
 	/**
@@ -199,6 +240,10 @@ public class Simulator implements Constants
 	 * @param args	Parameters from the command line, they are ignored.
 	 */
 	public static void main(String args[]) {
+		
+		// Testing
+		new SimulationGui(2048, 200, 225, 250000, 5000);
+		if(true) return;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("Please input system parameters: ");
 

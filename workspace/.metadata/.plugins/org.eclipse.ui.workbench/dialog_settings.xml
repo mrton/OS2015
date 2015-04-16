@@ -5,18 +5,22 @@
 		<item value="123" key="DIALOG_Y_ORIGIN"/>
 	</section>
 	<section name="org.eclipse.ui.internal.QuickAccess">
-		<item value="500" key="dialogHeight"/>
-		<item value="800" key="dialogWidth"/>
+		<item value="675" key="dialogHeight"/>
+		<item value="1200" key="dialogWidth"/>
 		<list key="textEntries">
+			<item value="1"/>
 			<item value="2"/>
 		</list>
 		<list key="orderedElements">
+			<item value="org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.ui.preferencePages.ColorsAndFonts)"/>
 			<item value="org.eclipse.jdt.debug.ui.jreProfiles"/>
 		</list>
 		<list key="orderedProviders">
+			<item value="org.eclipse.ui.commands"/>
 			<item value="org.eclipse.ui.preferences"/>
 		</list>
 		<list key="textArray">
+			<item value="font"/>
 			<item value="exec"/>
 			<item value="exe"/>
 		</list>
@@ -31,6 +35,7 @@
 		<item value="false" key="WizardFileSystemResourceImportPage1.STORE_CREATE_CONTAINER_STRUCTURE_ID"/>
 		<item value="false" key="WizardFileSystemResourceImportPage1.STORE_OVERWRITE_EXISTING_RESOURCES_ID"/>
 		<list key="WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID">
+			<item value="/Users/mrton/Desktop/P3"/>
 			<item value="/Users/mrton/Downloads/P2 2/images"/>
 			<item value="/Users/mrton/Downloads/P2"/>
 			<item value="/Users/mrton/Downloads/P1"/>

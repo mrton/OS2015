@@ -117,6 +117,29 @@ public class Process implements Constants
 		statistics.totalTimeSpentWaitingForMemory += timeSpentWaitingForMemory;
 		statistics.nofCompletedProcesses++;
 	}
-
+	
 	// Add more methods as needed
+	public void leftCpuQueue(long clock){
+		timeSpentWaitingForIo += clock - timeOfLastEvent;
+		timeOfLastEvent = clock;
+	}
+	
+	public void entersCpuQueue(long clock){
+		nofTimesInIoQueue++;
+		timeOfLastEvent = clock;
+	}
+	public void enterCpu(long clock){
+		timeSpentInReadyQueue += clock - timeOfLastEvent;
+		timeOfLastEvent = clock;
+	}
+	public long timeUntilNextIO() {
+		if(this.timeToNextIoOperation == 0) timeToNextIoOperation = (long) (Math.random() * 2 * avgIoInterval);
+		return timeSpentInCpu;
+	}
+	public long cpuTimeLeft(){
+		return cpuTimeNeeded;
+	}
+	public long getAverageIOTime(){
+		return avgIoInterval;
+	}
 }
